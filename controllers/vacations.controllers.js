@@ -41,6 +41,7 @@ async function updateOne(req, res)  {
     }
   }
 
+  
 async function DeleteOne (req, res) {
     const { id } = req.params;
     try {

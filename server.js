@@ -5,7 +5,6 @@ const employees = require('./routes/employees');
 const vacations = require('./routes/vacations');
 const penalties = require('./routes/penalties');
 const promotions = require('./routes/promotion');
-const GetFullDetails = require('./routes/Fulldetails');
 
 
 
@@ -16,7 +15,6 @@ app.use('/employees', employees);
 app.use('/vacations' , vacations);
 app.use('/penalties' , penalties);
 app.use('/promotions', promotions);
-app.use('/GetAllDetails' , GetFullDetails);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

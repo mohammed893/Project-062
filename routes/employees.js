@@ -1,17 +1,16 @@
 // routes/employees.js
 const express = require('express');
-const router = express.Router();
+const employees = express.Router();
 const employeeController = require('../controllers/employees.controllers')
-// Create a new employee
-router.post('/', employeeController.addNew);
 
-// Read all employees
-router.get('/', employeeController.readAll);
+employees.post('/', employeeController.addNew);
 
-// Update an employee
-router.put('/:id', employeeController.updateOne);
+employees.get('/', employeeController.readAll);
 
-// Delete an employee
-router.delete('/:id', employeeController.DeleteOne);
+employees.put('/:id', employeeController.updateOne);
 
-module.exports = router;
+employees.delete('/:id', employeeController.DeleteOne);
+
+employees.get('/Details/:id',employeeController.GetAround);
+
+module.exports = employees;

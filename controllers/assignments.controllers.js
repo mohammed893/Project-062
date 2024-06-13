@@ -14,7 +14,6 @@ async function AddOne (req, res) {
       res.status(500).send('Server Error');
     }
   }
-
 async function GetALl (req, res)  {
     try {
       const result = await pool.query('SELECT * FROM Assignments');
@@ -24,7 +23,6 @@ async function GetALl (req, res)  {
       res.status(500).send('Server Error');
     }
   }
-
 async function UpdateOne(req, res)  {
     const { id } = req.params;
     const { employeeID, assignmentType, decisionDescription, startDate, endDate, duration } = req.body;
@@ -39,7 +37,6 @@ async function UpdateOne(req, res)  {
       res.status(500).send('Server Error');
     }
   }
-
 async function DeleteOne (req, res) {
     const { id } = req.params;
     try {
@@ -50,7 +47,6 @@ async function DeleteOne (req, res) {
       res.status(500).send('Server Error');
     }
   }
-
 module.exports = {
     AddOne , GetALl , UpdateOne , DeleteOne
 }

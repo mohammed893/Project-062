@@ -14,7 +14,6 @@ async function NewOne (req, res) {
       res.status(500).send('Server Error');
     }
   }
-
 async function ReadAll (req, res) {
     try {
       const result = await pool.query('SELECT * FROM Penalties');
@@ -48,7 +47,6 @@ async function DeleteOne (req, res) {
       res.status(500).send('Server Error');
     }
   }
-
   module.exports = {
     NewOne , ReadAll , updateOne , DeleteOne
   }

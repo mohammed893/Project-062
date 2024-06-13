@@ -45,7 +45,8 @@ async function DeleteOne (req, res) {
     try {
       await pool.query('DELETE FROM Promotions WHERE PromotionID = $1', [id]);
       res.send('Promotion deleted successfully');
-    } catch (err) {
+    } catch (err) 
+    {
       console.error(err.message);
       res.status(500).send('Server Error');
     }
