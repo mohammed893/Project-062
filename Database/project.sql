@@ -373,7 +373,7 @@ ALTER TABLE ONLY public.vacations
 -- Name: requests requests_employeeid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.equests
+ALTER TABLE ONLY public.requests
     ADD CONSTRAINT requests_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid);
 
 
