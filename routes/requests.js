@@ -2,7 +2,7 @@
 const express = require('express');
 const requests = express.Router();
 const {AddOne,GetAll,GetOne,UpdateOne,DeleteOne,UpdateContent,UpdateStatus,
-    UpdateRRole,UpdateRType,getSameType,getForOne} 
+    UpdateRRole,UpdateRType,getSameType,getForOne,getSameStatus} 
     = require('../controllers/requests.controllers');
 
 requests.post('/' , AddOne);//CreateOne
@@ -16,5 +16,7 @@ requests.patch('/:id/receiver_role',UpdateRRole);//update Reciever Role
 requests.patch('/:id/requestType',UpdateRType);//update Request Type
 requests.get('/type/:requestType',getSameType);//get all with the same type
 requests.get('/employee/:employeeid',getForOne);//get all for one employee
+requests.get('/status/:status',getSameStatus);//get all for one employee
+
 
 module.exports = requests;

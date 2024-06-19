@@ -1,12 +1,15 @@
 const pool = require('../models/database');
+const notify = require('../controllers/socket.controllers')
 
 async function AddOne (req, res) {
     const { employeeid, receiver_role, receiver_name, content, dateofrequest, requestType } = req.body;
     try {
         const result = await pool.query(
-            'INSERT INTO requests (employeeid, receiver_role, receiver_name, content, dateofrequest, requestType) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            'INSERT INTO requests (employeeid, receiver_role, receiver_name, content, dateofrequest, requestType) VALUES ($1, $2, $3, $4, $5, $6) RETURNING requestid',
             [employeeid, receiver_role, receiver_name, content, dateofrequest, requestType]
         );
+        await notify.sendToClientByRole(receiver_role , result.rows[0]);
+       
         res.status(201).json(result.rows[0]);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -58,12 +61,16 @@ async function UpdateStatus(req , res){
     const { status } = req.body;
     try {
         const result = await pool.query(
-            'UPDATE requests SET status = $1 WHERE requestid = $2 RETURNING *',
+            'UPDATE requests SET status = $1 WHERE requestid = $2 RETURNING employeeid , requestid , status',
             [status, id]
         );
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Request not found' });
         }
+        // console.log(result.rows[0]);
+        console.log(result.rows[0].status );
+        await notify.sendToClientById( `${result.rows[0].employeeid}` ,{requId :result.rows[0].requestid 
+            ,status: result.rows[0].status });
         res.status(200).json(result.rows[0]);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -114,6 +121,17 @@ async function getSameType(req , res){
     }
 }
 
+async function getSameStatus(req , res){
+    const { status } = req.params;
+    try {
+        const result = await pool.query('SELECT * FROM requests WHERE status = $1', [status]);
+        res.status(200).json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
 async function getForOne(req , res){
     const { employeeid } = req.params;
     try {
@@ -126,11 +144,11 @@ async function getForOne(req , res){
 
 async function UpdateOne (req , res){
     const { id } = req.params;
-    const { employeeid, receiver_role, receiver_name, content, status, dateofrequest, requestType } = req.body;
+    const { employeeid, receiver_role, receiver_name, content, dateofrequest, requestType } = req.body;
     try {
         const result = await pool.query(
-            'UPDATE requests SET employeeid = $1, receiver_role = $2, receiver_name = $3, content = $4, status = $5, dateofrequest = $6, requestType = $7 WHERE requestid = $8 RETURNING *',
-            [employeeid, receiver_role, receiver_name, content, status, dateofrequest, requestType, id]
+            'UPDATE requests SET employeeid = $1, receiver_role = $2, receiver_name = $3, content = $4, dateofrequest = $5, requestType = $6 WHERE requestid = $7 RETURNING *',
+            [employeeid, receiver_role, receiver_name, content,dateofrequest, requestType, id]
         );
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Request not found' });
@@ -164,5 +182,6 @@ module.exports = {
     UpdateRRole,
     UpdateRType,
     getSameType,
-    getForOne
+    getForOne,
+    getSameStatus
 }

@@ -4,12 +4,6 @@ const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 const pool = require('./models/database');
 const mongoose = require('mongoose');
-// const io = require('socket.io')(server, {
-//   cors: {
-//     origin: '*',
-//     methods: ['GET', 'POST']
-//   }
-// });
 const { initializeSocket } = require('./controllers/socket.controllers');
 
 
