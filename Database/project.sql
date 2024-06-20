@@ -74,7 +74,8 @@ CREATE TABLE public.employees (
     jobtitle character varying(50),
     degree character varying(20),
     address character varying(200),
-    dateoflastpromotion date
+    dateoflastpromotion date,
+    role VARCHAR(50);
 );
 
 
