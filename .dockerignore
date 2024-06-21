@@ -1,0 +1,5 @@
+.md
+*/.idea
+*/node_modules
+package-lock.json
+*/Database_dumped
