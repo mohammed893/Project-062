@@ -1,14 +1,14 @@
-const pool = require('../models/database');
+const {pool} = require('../models/configrations');
 
 async function addNew (req, res){
     const { name, nationalIDNumber, dateOfAppointment,
          insuranceNumber, contractDate, functionalGroup,
-          jobTitle, degree, address, dateOfLastPromotion } = req.body;
+          jobTitle, degree, address, dateOfLastPromotion , role } = req.body;
     try {
       const result = await pool.query(
-        `INSERT INTO Employees (Name, NationalIDNumber, DateOfAppointment, InsuranceNumber, ContractDate, FunctionalGroup, JobTitle, Degree, Address, DateOfLastPromotion)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
-        [name, nationalIDNumber, dateOfAppointment, insuranceNumber, contractDate, functionalGroup, jobTitle, degree, address, dateOfLastPromotion]
+        `INSERT INTO Employees (Name, NationalIDNumber, DateOfAppointment, InsuranceNumber, ContractDate, FunctionalGroup, JobTitle, Degree, Address, DateOfLastPromotion , ROLE)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10 , $11) RETURNING *`,
+        [name, nationalIDNumber, dateOfAppointment, insuranceNumber, contractDate, functionalGroup, jobTitle, degree, address, dateOfLastPromotion , role]
       );
       res.json(result.rows[0]);
     } catch (err) {

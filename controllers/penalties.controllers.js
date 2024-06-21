@@ -1,4 +1,4 @@
-const pool = require('../models/database');
+const {pool} = require('../models/configrations');
 
 async function NewOne (req, res) {
     const { employeeID, penaltyDescription, dateOfPenalty } = req.body;

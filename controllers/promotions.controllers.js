@@ -1,4 +1,4 @@
-const pool = require('../models/database');
+const {pool} = require('../models/configrations');
 
 async function addOne (req, res) {
     const { employeeID, previousDegree, newDegree, promotionDate, previousSalary, newSalary } = req.body;

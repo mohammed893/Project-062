@@ -1,4 +1,4 @@
-const pool = require('../models/database');
+const {pool} = require('../models/configrations');
 const notify = require('../controllers/socket.controllers')
 
 async function AddOne (req, res) {

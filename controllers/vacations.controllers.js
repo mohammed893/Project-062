@@ -1,4 +1,4 @@
-const pool = require('../models/database');
+const {pool} = require('../models/configrations');
 
 
 async function NewVac (req, res) {
