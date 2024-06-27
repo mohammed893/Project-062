@@ -23,9 +23,12 @@ async function startServer() {
 
   await initializeSocket(server);
 
-  // await mongoose
-  //   .connect('mongodb://localhost:27017/mydatabase')
-  //   .then(() => console.log('MongoDB connected :)'));
+  await mongoose
+    .connect('mongodb+srv://omarsaad08:5RCr7kLbTk1cwiUE@cluster0.lubh9dn.mongodb.net/hr-management-system?retryWrites=true&w=majority&appName=Cluster0')
+    .then(() => {
+      console.log('MongoDB connected :)')
+    })
+    .catch((e) => console.log(`error: ${e}`));
 
   server.listen(PORT, () => {
     console.log(`Listening on Port ${PORT} !`);
