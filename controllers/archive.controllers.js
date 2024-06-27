@@ -6,6 +6,10 @@ const documentCache = new NodeCache({ stdTTL: 60 * 60 });
 
 const post_user = async (req, res) => {
     try {
+        const documentExist = await Archive.findOne({ name: req.body.userId });
+        if (documentExist) {
+            throw Error('this does already exist');
+        }
         const document = new Archive({ name: req.body.userId });
         await document.save();
         res.send('user added to archive');
@@ -22,13 +26,13 @@ const post_doc = async (req, res) => {
     }
 
     try {
-        const { userId, filetype } = req.body;
+        const { userId, filetype, filename } = req.body;
         switch (filetype) {
             case 'vacations':
                 await Archive.updateOne({ name: userId }, {
                     $push: {
                         vacations: {
-                            filename: req.file.originalName,
+                            filename: filename,
                             fileData: new Binary(req.file.buffer)
                         }
                     }
@@ -38,7 +42,7 @@ const post_doc = async (req, res) => {
                 await Archive.updateOne({ name: userId }, {
                     $push: {
                         ID: {
-                            filename: req.file.originalName,
+                            filename: filename,
                             fileData: new Binary(req.file.buffer)
                         }
                     }
@@ -48,12 +52,103 @@ const post_doc = async (req, res) => {
                 await Archive.updateOne({ name: userId }, {
                     $push: {
                         penalties: {
-                            filename: req.file.originalName,
+                            filename: filename,
                             fileData: new Binary(req.file.buffer)
                         }
                     }
                 });
                 break;
+            case 'employmentContract':
+                await Archive.updateOne({ name: userId }, {
+                    $push: {
+                        employmentContract: {
+                            filename: filename,
+                            fileData: new Binary(req.file.buffer)
+                        }
+                    }
+                });
+                break;
+            case 'disability':
+                await Archive.updateOne({ name: userId }, {
+                    $push: {
+                        disability: {
+                            filename: filename,
+                            fileData: new Binary(req.file.buffer)
+                        }
+                    }
+                });
+                break;
+            case 'innerTransfers':
+                await Archive.updateOne({ name: userId }, {
+                    $push: {
+                        innerTransfers: {
+                            filename: filename,
+                            fileData: new Binary(req.file.buffer)
+                        }
+                    }
+                });
+                break;
+            case 'secondments':
+                await Archive.updateOne({ name: userId }, {
+                    $push: {
+                        secondments: {
+                            filename: filename,
+                            fileData: new Binary(req.file.buffer)
+                        }
+                    }
+                });
+                break;
+            case 'academicQualification':
+                await Archive.updateOne({ name: userId }, {
+                    $push: {
+                        academicQualification: {
+                            filename: filename,
+                            fileData: new Binary(req.file.buffer)
+                        }
+                    }
+                });
+                break;
+            case 'certificates':
+                await Archive.updateOne({ name: userId }, {
+                    $push: {
+                        certificates: {
+                            filename: filename,
+                            fileData: new Binary(req.file.buffer)
+                        }
+                    }
+                });
+                break;
+            case 'privateVacations':
+                await Archive.updateOne({ name: userId }, {
+                    $push: {
+                        privateVacations: {
+                            filename: filename,
+                            fileData: new Binary(req.file.buffer)
+                        }
+                    }
+                });
+                break;
+            case 'personalPhoto':
+                await Archive.updateOne({ name: userId }, {
+                    $push: {
+                        personalPhoto: {
+                            filename: filename,
+                            fileData: new Binary(req.file.buffer)
+                        }
+                    }
+                });
+                break;
+            case 'bankingTransactions':
+                await Archive.updateOne({ name: userId }, {
+                    $push: {
+                        bankingTransactions: {
+                            filename: filename,
+                            fileData: new Binary(req.file.buffer)
+                        }
+                    }
+                });
+                break;
+
         }
         res.send('document added');
     } catch (err) {
@@ -81,12 +176,16 @@ const get_file = async (req, res) => {
     console.log(req.params.id);
     let images = documentCache.get(req.params.id)[`${req.params.images}`];
     const json = [];
-    images.forEach((e) => {
-        json.push({
-            name: e.filename,
-            binary: Buffer.from(Uint8Array.from(e.fileData).buffer).toString('base64'),
-        });
-    })
+    console.log(typeof images);
+    if (typeof images != undefined) {
+        console.log(typeof images);
+        images.forEach((e) => {
+            json.push({
+                name: e.filename,
+                binary: Buffer.from(Uint8Array.from(e.fileData).buffer).toString('base64'),
+            });
+        })
+    }
     const jsonString = JSON.stringify(json);
     res.set('Content-Type', 'application/json');
     res.send(jsonString);
