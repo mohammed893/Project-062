@@ -16,6 +16,28 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: project; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE project WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'English_United States.1252';
+
+
+ALTER DATABASE project OWNER TO postgres;
+
+\connect project
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -75,7 +97,21 @@ CREATE TABLE public.employees (
     degree character varying(20),
     address character varying(200),
     dateoflastpromotion date,
-    role VARCHAR(50)
+    role character varying(50),
+    gender character(1) NOT NULL,
+    religion character varying(20),
+    date_of_birth date,
+    phone_number character varying(15),
+    military_service_status character varying(20),
+    jobcategory character varying(20),
+    administration character varying(50),
+    currentjob character varying(50),
+    qualification character varying(50),
+    contract character varying(50),
+    typeofcontract character varying(50),
+    report character varying(50),
+    employmentstatus character varying(50),
+    CONSTRAINT chk CHECK ((gender = ANY (ARRAY['F'::bpchar, 'M'::bpchar])))
 );
 
 
@@ -179,6 +215,83 @@ ALTER SEQUENCE public.promotions_promotionid_seq OWNED BY public.promotions.prom
 
 
 --
+-- Name: requests_requestid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.requests_requestid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.requests_requestid_seq OWNER TO postgres;
+
+--
+-- Name: requests; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.requests (
+    requestid integer DEFAULT nextval('public.requests_requestid_seq'::regclass) NOT NULL,
+    employeeid integer NOT NULL,
+    receiver_role character varying(50) NOT NULL,
+    receiver_name character varying(50),
+    content text NOT NULL,
+    status text DEFAULT 'pending'::text NOT NULL,
+    dateofrequest date,
+    requesttype text NOT NULL
+);
+
+
+ALTER TABLE public.requests OWNER TO postgres;
+
+--
+-- Name: training_trainingid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.training_trainingid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.training_trainingid_seq OWNER TO postgres;
+
+--
+-- Name: training; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.training (
+    trainingid integer DEFAULT nextval('public.training_trainingid_seq'::regclass) NOT NULL,
+    startdate date,
+    enddate date,
+    provider character varying(50),
+    duration character varying(50),
+    specialization character varying(50),
+    status character varying(20)
+);
+
+
+ALTER TABLE public.training OWNER TO postgres;
+
+--
+-- Name: training_participants; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.training_participants (
+    trainingid integer,
+    employeeid integer
+);
+
+
+ALTER TABLE public.training_participants OWNER TO postgres;
+
+--
 -- Name: vacations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -214,31 +327,6 @@ ALTER SEQUENCE public.vacations_vacationid_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.vacations_vacationid_seq OWNED BY public.vacations.vacationid;
 
---
--- Name: requests; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE requests(
-    requestid integer NOT NULL,
-    employeeid integer NOT NULL,
-    receiver_role VARCHAR(50) NOT NULL,
-    receiver_name VARCHAR(50),
-    content TEXT NOT NULL,
-    status TEXT DEFAULT 'pending' NOT NULL,
-    dateofrequest date,
-    requestType TEXT NOT NULL);
-
---
--- Name: requests_requestid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.requests_requestid_seq
-AS integer
-START WITH 1
-INCREMENT BY 1
-NO MINVALUE
-NO MAXVALUE
-CACHE 1;
 
 --
 -- Name: assignments assignmentid; Type: DEFAULT; Schema: public; Owner: postgres
@@ -273,13 +361,6 @@ ALTER TABLE ONLY public.promotions ALTER COLUMN promotionid SET DEFAULT nextval(
 --
 
 ALTER TABLE ONLY public.vacations ALTER COLUMN vacationid SET DEFAULT nextval('public.vacations_vacationid_seq'::regclass);
-
-
---
--- Name: requests requestid; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.requests ALTER COLUMN requestid SET DEFAULT nextval('public.requests_requestid_seq'::regclass);
 
 
 --
@@ -323,19 +404,27 @@ ALTER TABLE ONLY public.promotions
 
 
 --
+-- Name: requests requests_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.requests
+    ADD CONSTRAINT requests_pkey PRIMARY KEY (requestid);
+
+
+--
+-- Name: training training_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.training
+    ADD CONSTRAINT training_pkey PRIMARY KEY (trainingid);
+
+
+--
 -- Name: vacations vacations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.vacations
     ADD CONSTRAINT vacations_pkey PRIMARY KEY (vacationid);
-
-
---
--- Name: vacations requests_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE requests
-    ADD CONSTRAINT requests_pkey PRIMARY KEY(requestid);
 
 
 --
@@ -363,6 +452,22 @@ ALTER TABLE ONLY public.promotions
 
 
 --
+-- Name: training_participants training_participants_employeeid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.training_participants
+    ADD CONSTRAINT training_participants_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid);
+
+
+--
+-- Name: training_participants training_participants_trainingid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.training_participants
+    ADD CONSTRAINT training_participants_trainingid_fkey FOREIGN KEY (trainingid) REFERENCES public.training(trainingid);
+
+
+--
 -- Name: vacations vacations_employeeid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -371,13 +476,6 @@ ALTER TABLE ONLY public.vacations
 
 
 --
--- Name: requests requests_employeeid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.requests
-    ADD CONSTRAINT requests_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid);
-
-
---
 -- PostgreSQL database dump complete
 --
+
