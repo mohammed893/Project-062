@@ -1,5 +1,5 @@
 const {pool} = require('../models/configrations');
-
+const {post_user} = require('./archive.controllers');
 async function addNew (req, res){
   const allFields = [
     'name', 'nationalidnumber', 'dateofappointment', 'insurancenumber', 'contractdate',
@@ -30,12 +30,13 @@ async function addNew (req, res){
   const query = `
     INSERT INTO public.employees (${fields.join(', ')})
     VALUES (${placeholders})
-    RETURNING *
+    RETURNING employeeid;
   `;
 
   try {
     const result = await pool.query(query, values);
-    res.json(result.rows[0]);
+    res.json(result.rows[0]["employeeid"]);
+    await post_user(result.rows[0]["employeeid"]);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

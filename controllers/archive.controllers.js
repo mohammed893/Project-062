@@ -4,18 +4,17 @@ const Archive = require('../models/archive.model');
 const NodeCache = require('node-cache');
 const documentCache = new NodeCache({ stdTTL: 60 * 60 });
 
-const post_user = async (req, res) => {
+async function post_user(id) {
     try {
-        const documentExist = await Archive.findOne({ name: req.body.userId });
+        const documentExist = await Archive.findOne({ name: id });
         if (documentExist) {
-            throw Error('this does already exist');
+            throw Error('this does already exist' + id);
         }
-        const document = new Archive({ name: req.body.userId });
+        const document = new Archive({ name: id });
         await document.save();
-        res.send('user added to archive');
+        console.log('user added to archive with ID '+ id);
     } catch (err) {
-        console.log('Error:', err);
-        res.status(500).send('Failed to add user.');
+        console.log('Error Adding to Archive:', err);
     }
 }
 
