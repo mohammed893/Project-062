@@ -110,8 +110,8 @@ CREATE TABLE public.employees (
     contract character varying(50),
     typeofcontract character varying(50),
     report character varying(50),
-    employmentstatus character varying(50),
-    CONSTRAINT chk CHECK ((gender = ANY (ARRAY['F'::bpchar, 'M'::bpchar])))
+    employmentstatus character varying(50)--,
+    -- CONSTRAINT chk CHECK ((gender = ANY (ARRAY['F'::bpchar, 'M'::bpchar])))
 );
 
 
