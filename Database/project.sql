@@ -98,7 +98,7 @@ CREATE TABLE public.employees (
     address character varying(200),
     dateoflastpromotion date,
     role character varying(50),
-    gender character(1) NOT NULL,
+    gender character varying(10),
     religion character varying(20),
     date_of_birth date,
     phone_number character varying(15),
@@ -111,7 +111,7 @@ CREATE TABLE public.employees (
     typeofcontract character varying(50),
     report character varying(50),
     employmentstatus character varying(50),
-    CONSTRAINT chk CHECK ((gender = ANY (ARRAY['F'::bpchar, 'M'::bpchar])))
+    -- CONSTRAINT chk CHECK ((gender = ANY (ARRAY['F'::bpchar, 'M'::bpchar])))
 );
 
 
@@ -579,7 +579,7 @@ CREATE TABLE public.employees (
     address character varying(200),
     dateoflastpromotion date,
     role character varying(50),
-    gender character(1) NOT NULL,
+    gender character varying(10),
     religion character varying(20),
     date_of_birth date,
     phone_number character varying(15),
@@ -592,7 +592,7 @@ CREATE TABLE public.employees (
     typeofcontract character varying(50),
     report character varying(50),
     employmentstatus character varying(50),
-    CONSTRAINT chk CHECK ((gender = ANY (ARRAY['F'::bpchar, 'M'::bpchar])))
+    -- CONSTRAINT chk CHECK ((gender = ANY (ARRAY['F'::bpchar, 'M'::bpchar])))
 );
 
 
