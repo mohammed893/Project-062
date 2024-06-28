@@ -91,7 +91,7 @@ CREATE TABLE public.employees (
     nationalidnumber character varying(20),
     dateofappointment date,
     insurancenumber character varying(20),
-    contractdate date ,
+    contractdate date,
     functionalgroup character varying(50),
     jobtitle character varying(50),
     degree character varying(20),
@@ -110,8 +110,7 @@ CREATE TABLE public.employees (
     contract character varying(50),
     typeofcontract character varying(50),
     report character varying(50),
-    employmentstatus character varying(50)--,
-    -- CONSTRAINT chk CHECK ((gender = ANY (ARRAY['F'::bpchar, 'M'::bpchar])))
+    employmentstatus character varying(50)
 );
 
 
@@ -449,6 +448,14 @@ ALTER TABLE ONLY public.penalties
 
 ALTER TABLE ONLY public.promotions
     ADD CONSTRAINT promotions_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid) ON DELETE CASCADE;
+
+
+--
+-- Name: requests requests_employeeid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.requests
+    ADD CONSTRAINT requests_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid) ON DELETE CASCADE;
 
 
 --
