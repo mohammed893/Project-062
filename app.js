@@ -13,6 +13,7 @@ const requests = require('./routes/requests');
 const notify = require('./routes/notify');
 const auth = require('./routes/auth');
 const archive = require('./routes/archive');
+const training = require('./routes/training');
 app.use(cors({ origin: 'http://localhost:3000', }));
 app.use(morgan(
    format = "combined",
@@ -26,5 +27,6 @@ app.use('/promotions', promotions);
 app.use('/requests', requests)
 app.use('/notify', notify);
 app.use('/archive', archive);
+app.use('/training', training);
 module.exports = app;
 

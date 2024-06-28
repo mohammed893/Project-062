@@ -88,10 +88,10 @@ ALTER SEQUENCE public.assignments_assignmentid_seq OWNED BY public.assignments.a
 CREATE TABLE public.employees (
     employeeid integer NOT NULL,
     name character varying(100) NOT NULL,
-    nationalidnumber character varying(20) NOT NULL,
-    dateofappointment date NOT NULL,
-    insurancenumber character varying(20) NOT NULL,
-    contractdate date NOT NULL,
+    nationalidnumber character varying(20),
+    dateofappointment date,
+    insurancenumber character varying(20),
+    contractdate date ,
     functionalgroup character varying(50),
     jobtitle character varying(50),
     degree character varying(20),
@@ -432,7 +432,7 @@ ALTER TABLE ONLY public.vacations
 --
 
 ALTER TABLE ONLY public.assignments
-    ADD CONSTRAINT assignments_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid);
+    ADD CONSTRAINT assignments_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid) ON DELETE CASCADE;
 
 
 --
@@ -440,7 +440,7 @@ ALTER TABLE ONLY public.assignments
 --
 
 ALTER TABLE ONLY public.penalties
-    ADD CONSTRAINT penalties_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid);
+    ADD CONSTRAINT penalties_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid) ON DELETE CASCADE;
 
 
 --
@@ -448,7 +448,7 @@ ALTER TABLE ONLY public.penalties
 --
 
 ALTER TABLE ONLY public.promotions
-    ADD CONSTRAINT promotions_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid);
+    ADD CONSTRAINT promotions_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid) ON DELETE CASCADE;
 
 
 --
@@ -456,7 +456,7 @@ ALTER TABLE ONLY public.promotions
 --
 
 ALTER TABLE ONLY public.training_participants
-    ADD CONSTRAINT training_participants_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid);
+    ADD CONSTRAINT training_participants_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid) ON DELETE CASCADE;
 
 
 --
@@ -464,7 +464,7 @@ ALTER TABLE ONLY public.training_participants
 --
 
 ALTER TABLE ONLY public.training_participants
-    ADD CONSTRAINT training_participants_trainingid_fkey FOREIGN KEY (trainingid) REFERENCES public.training(trainingid);
+    ADD CONSTRAINT training_participants_trainingid_fkey FOREIGN KEY (trainingid) REFERENCES public.training(trainingid) ON DELETE CASCADE;
 
 
 --
@@ -472,7 +472,7 @@ ALTER TABLE ONLY public.training_participants
 --
 
 ALTER TABLE ONLY public.vacations
-    ADD CONSTRAINT vacations_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid);
+    ADD CONSTRAINT vacations_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid) ON DELETE CASCADE;
 
 
 --

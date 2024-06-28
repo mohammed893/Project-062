@@ -11,7 +11,7 @@ async function NewOne (req, res) {
       res.json(result.rows[0]);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      res.status(500).send('Server Error ' + err);
     }
   }
 async function ReadAll (req, res) {
