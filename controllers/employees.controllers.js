@@ -1,5 +1,5 @@
 const {pool} = require('../models/configrations');
-const {post_user} = require('./archive.controllers');
+const {post_user , delete_user} = require('./archive.controllers');
 async function addNew (req, res){
   const allFields = [
     'name', 'nationalidnumber', 'dateofappointment', 'insurancenumber', 'contractdate',
@@ -81,8 +81,13 @@ async function updateOne (req, res) {
 async function DeleteOne (req, res) {
     const { id } = req.params;
     try {
-      await pool.query('DELETE FROM Employees WHERE EmployeeID = $1', [id]);
-      res.send('Employee deleted successfully');
+      await pool.query('DELETE FROM Employees WHERE EmployeeID = $1', [id]).then(()=>{
+        console.log(`User ${id} Deleted From SQL DataBase !`);
+      });
+      await delete_user(id).then(() => {
+        // console.log(`User ${id} Deleted From Mongo DataBase !`);
+      });
+      res.send('Employee deleted successfully ');
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error');

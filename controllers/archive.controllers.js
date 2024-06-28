@@ -17,6 +17,18 @@ async function post_user(id) {
         console.log('Error Adding to Archive:', err);
     }
 }
+const delete_user = async (id) => {
+    try {
+        const documentExist = await Archive.findOne({ name: id });
+        if (!documentExist) {
+            throw Error('this user does not exist to delete it');
+        }
+        Archive.deleteOne({ name: id });
+        console.log('Deleted User ' + id + "From MongoDB");
+    } catch (err) {
+        console.log(`failed to delete user ${id} error: ${err}`);
+    }
+}
 
 const post_doc = async (req, res) => {
 
@@ -192,6 +204,7 @@ const get_file = async (req, res) => {
 
 module.exports = {
     post_user,
+    delete_user,
     post_doc,
     get_doc,
     get_file,
