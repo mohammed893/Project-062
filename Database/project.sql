@@ -17,15 +17,15 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: employeedb1; Type: DATABASE; Schema: -; Owner: postgres
+-- Name: employeedb; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE employeedb1 WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'English_United States.1252';
+CREATE DATABASE employeedb WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'English_United States.1252';
 
 
-ALTER DATABASE employeedb1 OWNER TO postgres;
+ALTER DATABASE employeedb OWNER TO postgres;
 
-\connect employeedb1
+\connect employeedb
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
