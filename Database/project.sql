@@ -90,6 +90,7 @@ CREATE TABLE public.employees (
     name character varying(100) NOT NULL,
     nationalidnumber character varying(20),
     dateofappointment date,
+    typeofemployment character varying(50),
     insurancenumber character varying(20),
     contractdate date,
     functionalgroup character varying(50),
