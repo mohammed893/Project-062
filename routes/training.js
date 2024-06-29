@@ -18,13 +18,13 @@ const {insertNewTraining , //Add a training (Provider)
 training.post('/', insertNewTraining);
 training.post('/emp', insertPeopleIntoTraining);
 training.get('/', getAllTrainingsWithParticipants);
-training.get('/:trainingId', getTrainingByIdWithParticipants);
-training.get('/provider', selectProvidersOfTrainings);
-training.get('/:id/ProvidersForEmp', selectProvidersFromEmployee);
+training.get('/trainingId/trainingId', getTrainingByIdWithParticipants);
+training.get('/providers', selectProvidersOfTrainings);
+training.get('/ProvidersForEmp/:id', selectProvidersFromEmployee);
 training.get('/EmpsForProvider/:providerName' , getEmployeesForProvider);
 training.put('/', updateTraining);
-training.patch('/:trainingId/status/:status', updateTrainingStatus);
-training.delete('/:trainingId', deleteTraining);
+training.patch('/trainingId/:trainingId/status/:status', updateTrainingStatus);
+training.delete('/trainingId/:trainingId', deleteTraining);
 training.delete('/emp/:employeeId/training/:trainingId',deleteEmployeeFromTraining);
 
 module.exports = training;

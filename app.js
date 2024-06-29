@@ -14,6 +14,8 @@ const notify = require('./routes/notify');
 const auth = require('./routes/auth');
 const archive = require('./routes/archive');
 const training = require('./routes/training');
+const Increasements = require('./routes/increasements');
+
 app.use(cors({ origin: 'http://localhost:3000', }));
 app.use(morgan(
    format = "combined",
@@ -28,5 +30,6 @@ app.use('/requests', requests)
 app.use('/notify', notify);
 app.use('/archive', archive);
 app.use('/training', training);
+app.use('/increasements', Increasements)
 module.exports = app;
 

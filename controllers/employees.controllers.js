@@ -5,7 +5,7 @@ async function addNew(req, res) {
     'name', 'nationalidnumber', 'dateofappointment', 'insurancenumber', 'contractdate',
     'functionalgroup', 'jobtitle', 'degree', 'address', 'dateoflastpromotion', 'role', 'gender', 'religion',
     'date_of_birth', 'phone_number', 'military_service_status', 'jobcategory', 'administration',
-    'currentjob', 'qualification', 'contract', 'typeofcontract', 'report', 'employmentstatus','typeofemployment'
+    'currentjob', 'qualification', 'contract', 'typeofcontract', 'report', 'employmentstatus','typeofemployment','maritalstatus'
   ];
 
   // Extract provided fields and values from request body
@@ -127,13 +127,21 @@ async function DeleteOne (req, res) {
       const promotionsQuery = `SELECT * FROM Promotions WHERE EmployeeID = $1`;
       const assignmentsQuery = `SELECT * FROM Assignments WHERE EmployeeID = $1`;
       const requestsQuery = `SELECT * FROM requests WHERE EmployeeID = $1`;
-  
+      const increasementQuery = `SELECT * FROM Increasement WHERE EmployeeID = $1`;
+      const trainingQuery = `SELECT provider
+             FROM employees AS e 
+             JOIN training_participants AS tp ON e.employeeid = tp.employeeid
+             JOIN training AS t ON tp.trainingid = t.trainingid
+             WHERE e.employeeid = $1`;
+
       const employeeResult = await pool.query(employeeQuery, [id]);
       const penaltiesResult = await pool.query(penaltiesQuery, [id]);
       const vacationsResult = await pool.query(vacationsQuery, [id]);
       const promotionsResult = await pool.query(promotionsQuery, [id]);
       const assignmentsResult = await pool.query(assignmentsQuery, [id]);
       const requestsResult = await pool.query(requestsQuery, [id]);
+      const increasementResult = await pool.query(increasementQuery, [id]);
+      const trainingResult = await pool.query(trainingQuery, [id])
   
       if (employeeResult.rows.length === 0) {
         return res.status(404).send('Employee not found');
@@ -149,7 +157,9 @@ async function DeleteOne (req, res) {
         vacations: vacationsResult.rows,
         promotions: promotionsResult.rows,
         assignments: assignmentsResult.rows,
-        requests: requestsResult.rows
+        requests: requestsResult.rows,
+        increasements: increasementResult.rows,
+        trainings: trainingResult.rows
       };
   
       res.json(employeeDetails);

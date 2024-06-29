@@ -111,7 +111,8 @@ CREATE TABLE public.employees (
     contract character varying(50),
     typeofcontract character varying(50),
     report character varying(50),
-    employmentstatus character varying(50)
+    employmentstatus character varying(50),
+    maritalstatus character varying(7)
 );
 
 
@@ -138,6 +139,36 @@ ALTER SEQUENCE public.employees_employeeid_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.employees_employeeid_seq OWNED BY public.employees.employeeid;
 
+
+--
+-- Name: increasement_increasementid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.increasement_increasementid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.increasement_increasementid_seq OWNER TO postgres;
+
+--
+-- Name: increasement; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.increasement (
+    employeeid integer NOT NULL,
+    increasementid integer DEFAULT nextval('public.increasement_increasementid_seq'::regclass) NOT NULL,
+    newsalary integer,
+    increasement integer,
+    dateofincreasement date DEFAULT CURRENT_DATE
+);
+
+
+ALTER TABLE public.increasement OWNER TO postgres;
 
 --
 -- Name: penalties; Type: TABLE; Schema: public; Owner: postgres
@@ -388,6 +419,14 @@ ALTER TABLE ONLY public.employees
 
 
 --
+-- Name: increasement increasement_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.increasement
+    ADD CONSTRAINT increasement_pkey PRIMARY KEY (increasementid);
+
+
+--
 -- Name: penalties penalties_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -433,6 +472,14 @@ ALTER TABLE ONLY public.vacations
 
 ALTER TABLE ONLY public.assignments
     ADD CONSTRAINT assignments_employeeid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid) ON DELETE CASCADE;
+
+
+--
+-- Name: increasement increasement_increasementid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.increasement
+    ADD CONSTRAINT increasement_increasementid_fkey FOREIGN KEY (employeeid) REFERENCES public.employees(employeeid) ON DELETE CASCADE;
 
 
 --
@@ -486,3 +533,4 @@ ALTER TABLE ONLY public.vacations
 --
 -- PostgreSQL database dump complete
 --
+
