@@ -25,14 +25,27 @@ async function GetAll (req, res) {
     }
   }
 
-async function UpdateOne (req, res) {
+  async function UpdateOne(req, res) {
     const { id } = req.params;
-    const { employeeID, previousDegree, newDegree, promotionDate, previousSalary, newSalary } = req.body;
+    const updates = req.body;
+  
+    const fields = [];
+    const values = [];
+    let query = 'UPDATE Promotions SET ';
+  
+    // Construct SET clause dynamically
+    Object.keys(updates).forEach((field, index) => {
+      fields.push(`${field} = $${index + 1}`);
+      values.push(updates[field]);
+    });
+  
+    // Add WHERE clause for the specific PromotionID
+    query += fields.join(', ');
+    query += ` WHERE PromotionID = $${values.length + 1} RETURNING *`;
+    values.push(id);
+  
     try {
-      const result = await pool.query(
-        `UPDATE Promotions SET EmployeeID = $1, PreviousDegree = $2, NewDegree = $3, PromotionDate = $4, PreviousSalary = $5, NewSalary = $6 WHERE PromotionID = $7 RETURNING *`,
-        [employeeID, previousDegree, newDegree, promotionDate, previousSalary, newSalary, id]
-      );
+      const result = await pool.query(query, values);
       res.json(result.rows[0]);
     } catch (err) {
       console.error(err.message);

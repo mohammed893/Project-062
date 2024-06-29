@@ -23,14 +23,27 @@ async function GetALl (req, res)  {
       res.status(500).send('Server Error');
     }
   }
-async function UpdateOne(req, res)  {
+  async function UpdateOne(req, res) {
     const { id } = req.params;
-    const { employeeID, assignmentType, decisionDescription, startDate, endDate, duration } = req.body;
+    const updates = req.body;
+  
+    const fields = [];
+    const values = [];
+    let query = 'UPDATE Assignments SET ';
+  
+    // Construct SET clause dynamically
+    Object.keys(updates).forEach((field, index) => {
+      fields.push(`${field} = $${index + 1}`);
+      values.push(updates[field]);
+    });
+  
+    // Add WHERE clause for the specific AssignmentID
+    query += fields.join(', ');
+    query += ` WHERE AssignmentID = $${values.length + 1} RETURNING *`;
+    values.push(id);
+  
     try {
-      const result = await pool.query(
-        `UPDATE Assignments SET EmployeeID = $1, AssignmentType = $2, DecisionDescription = $3, StartDate = $4, EndDate = $5, Duration = $6 WHERE AssignmentID = $7 RETURNING *`,
-        [employeeID, assignmentType, decisionDescription, startDate, endDate, duration, id]
-      );
+      const result = await pool.query(query, values);
       res.json(result.rows[0]);
     } catch (err) {
       console.error(err.message);

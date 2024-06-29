@@ -26,21 +26,34 @@ async function ReadAll (req, res) {
     }
   }
 
-async function updateOne(req, res)  {
+  async function updateOne(req, res) {
     const { id } = req.params;
-    const { employeeID, startDate, endDate, duration } = req.body;
+    const updates = req.body;
+  
+    const fields = [];
+    const values = [];
+    let query = 'UPDATE Vacations SET ';
+  
+    // Construct SET clause dynamically
+    Object.keys(updates).forEach((field, index) => {
+      fields.push(`${field} = $${index + 1}`);
+      values.push(updates[field]);
+    });
+  
+    // Add WHERE clause for the specific VacationID
+    query += fields.join(', ');
+    query += ` WHERE VacationID = $${values.length + 1} RETURNING *`;
+    values.push(id);
+  
     try {
-      const result = await pool.query(
-        `UPDATE Vacations SET EmployeeID = $1, StartDate = $2, EndDate = $3, Duration = $4 WHERE VacationID = $5 RETURNING *`,
-        [employeeID, startDate, endDate, duration, id]
-      );
+      const result = await pool.query(query, values);
       res.json(result.rows[0]);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error');
     }
   }
-
+  
   
 async function DeleteOne (req, res) {
     const { id } = req.params;

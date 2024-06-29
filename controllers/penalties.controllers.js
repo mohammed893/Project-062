@@ -23,14 +23,27 @@ async function ReadAll (req, res) {
       res.status(500).send('Server Error');
     }
   }
-async function updateOne (req, res) {
+  async function updateOne(req, res) {
     const { id } = req.params;
-    const { employeeID, penaltyDescription, dateOfPenalty } = req.body;
+    const updates = req.body;
+  
+    const fields = [];
+    const values = [];
+    let query = 'UPDATE Penalties SET ';
+  
+    // Construct SET clause dynamically
+    Object.keys(updates).forEach((field, index) => {
+      fields.push(`${field} = $${index + 1}`);
+      values.push(updates[field]);
+    });
+  
+    // Add WHERE clause for the specific PenaltyID
+    query += fields.join(', ');
+    query += ` WHERE PenaltyID = $${values.length + 1} RETURNING *`;
+    values.push(id);
+  
     try {
-      const result = await pool.query(
-        `UPDATE Penalties SET EmployeeID = $1, PenaltyDescription = $2, DateOfPenalty = $3 WHERE PenaltyID = $4 RETURNING *`,
-        [employeeID, penaltyDescription, dateOfPenalty, id]
-      );
+      const result = await pool.query(query, values);
       res.json(result.rows[0]);
     } catch (err) {
       console.error(err.message);

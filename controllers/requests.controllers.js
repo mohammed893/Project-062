@@ -142,22 +142,36 @@ async function getForOne(req , res){
     }
 }
 
-async function UpdateOne (req , res){
+async function UpdateOne(req, res) {
     const { id } = req.params;
-    const { employeeid, receiver_role, receiver_name, content, dateofrequest, requestType } = req.body;
+    const updates = req.body;
+  
+    const fields = [];
+    const values = [];
+    let query = 'UPDATE requests SET ';
+  
+    // Construct SET clause dynamically
+    Object.keys(updates).forEach((field, index) => {
+      fields.push(`${field} = $${index + 1}`);
+      values.push(updates[field]);
+    });
+  
+    // Add WHERE clause for the specific requestid
+    query += fields.join(', ');
+    query += ` WHERE requestid = $${values.length + 1} RETURNING *`;
+    values.push(id);
+  
     try {
-        const result = await pool.query(
-            'UPDATE requests SET employeeid = $1, receiver_role = $2, receiver_name = $3, content = $4, dateofrequest = $5, requestType = $6 WHERE requestid = $7 RETURNING *',
-            [employeeid, receiver_role, receiver_name, content,dateofrequest, requestType, id]
-        );
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Request not found' });
-        }
-        res.status(200).json(result.rows[0]);
+      const result = await pool.query(query, values);
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Request not found' });
+      }
+      res.status(200).json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
-}
+  }
+  
 
 async function DeleteOne(req , res){
     const { id } = req.params;

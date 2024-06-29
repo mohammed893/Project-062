@@ -74,24 +74,38 @@ async function getEmployeesForProvider(req, res) {
     }
 }
 async function updateTraining(req, res) {
-    const { specialization, provider, duration, status, startDate, endDate, trainingId } = req.body;
+    const { trainingId } = req.body;
+    const updates = req.body;
+  
+    const fields = [];
+    const values = [];
+    let query = 'UPDATE training SET ';
+  
+    // Exclude trainingId from updates and handle separately
+    delete updates.trainingId;
+  
+    // Construct SET clause dynamically
+    Object.keys(updates).forEach((field, index) => {
+      fields.push(`${field} = $${index + 1}`);
+      values.push(updates[field]);
+    });
+  
+    // Add WHERE clause for the specific trainingid
+    query += fields.join(', ');
+    query += ` WHERE trainingid = $${values.length + 1} RETURNING *`;
+    values.push(trainingId);
+  
     try {
-        const result = await pool.query(
-            `UPDATE training
-             SET specialization = $1, provider = $2, duration = $3, status = $4, startdate = $5, enddate = $6
-             WHERE trainingid = $7
-             RETURNING *`,
-            [specialization, provider, duration, status, startDate, endDate, trainingId]
-        );
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Training not found' });
-        }
-        res.json(result.rows[0]);
+      const result = await pool.query(query, values);
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'Training not found' });
+      }
+      res.json(result.rows[0]);
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
+      console.error(err.message);
+      res.status(500).send('Server Error');
     }
-}
+  }
 async function updateTrainingStatus(req, res) {
     const { trainingId , status } = req.params;
     try {

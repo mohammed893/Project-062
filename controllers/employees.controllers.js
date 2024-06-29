@@ -1,11 +1,11 @@
 const {pool} = require('../models/configrations');
 const {post_user , delete_user} = require('./archive.controllers');
-async function addNew (req, res){
+async function addNew(req, res) {
   const allFields = [
     'name', 'nationalidnumber', 'dateofappointment', 'insurancenumber', 'contractdate',
     'functionalgroup', 'jobtitle', 'degree', 'address', 'dateoflastpromotion', 'role', 'gender', 'religion',
     'date_of_birth', 'phone_number', 'military_service_status', 'jobcategory', 'administration',
-    'currentjob', 'qualification', 'contract', 'typeofcontract', 'report', 'employmentstatus'
+    'currentjob', 'qualification', 'contract', 'typeofcontract', 'report', 'employmentstatus','typeofemployment'
   ];
 
   // Extract provided fields and values from request body
@@ -19,7 +19,18 @@ async function addNew (req, res){
   allFields.forEach(field => {
     fields.push(field);
     if (providedFields.includes(field)) {
-      values.push(req.body[field]);
+      if (field === 'gender') {
+        // Transform Arabic gender value to English abbreviation
+        if (req.body[field] === 'ذكر') {
+          values.push('M');
+        } else if (req.body[field] === 'أنثى') {
+          values.push('F');
+        } else {
+          values.push(null); // Handle other cases as needed
+        }
+      } else {
+        values.push(req.body[field]);
+      }
     } else {
       values.push(null); // Use null for PostgreSQL NULL value
     }
@@ -39,20 +50,28 @@ async function addNew (req, res){
     await post_user(result.rows[0]["employeeid"]);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).send('Server Error:' + err);
   }
 }
 
-async function readAll (req, res) {
-    try {
-      const result = await pool.query('SELECT * FROM Employees');
-      res.json(result.rows);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error: ' +err);
-    }
+async function readAll(req, res) {
+  try {
+    const result = await pool.query('SELECT * FROM Employees');
+    const transformedRows = result.rows.map(row => {
+      // Transform 'M' and 'F' to Arabic equivalents
+      return {
+        ...row,
+        gender: row.gender === 'M' ? 'ذكر' : (row.gender === 'F' ? 'أنثى' : row.gender)
+        // Add additional transformations as needed for other fields
+      };
+    });
+    res.json(transformedRows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error: ' + err);
   }
-async function updateOne (req, res) {
+}
+async function updateOne(req, res) {
   const { id } = req.params;
   const updates = req.body;
 
@@ -61,8 +80,13 @@ async function updateOne (req, res) {
   let query = 'UPDATE public.employees SET ';
 
   Object.keys(updates).forEach((field, index) => {
+    if (field === 'gender') {
+      // Transform 'ذكر' and 'أنثى' to 'M' and 'F' respectively before updating
+      values.push(updates[field] === 'ذكر' ? 'M' : (updates[field] === 'أنثى' ? 'F' : updates[field]));
+    } else {
+      values.push(updates[field]);
+    }
     fields.push(`${field} = $${index + 1}`);
-    values.push(updates[field]);
   });
 
   query += fields.join(', ');
@@ -93,7 +117,7 @@ async function DeleteOne (req, res) {
       res.status(500).send('Server Error');
     }
   }
-  async function GetAround (req, res) {
+  async function GetAround(req, res) {
     const { id } = req.params;
   
     try {
@@ -110,25 +134,28 @@ async function DeleteOne (req, res) {
       const promotionsResult = await pool.query(promotionsQuery, [id]);
       const assignmentsResult = await pool.query(assignmentsQuery, [id]);
       const requestsResult = await pool.query(requestsQuery, [id]);
-
   
       if (employeeResult.rows.length === 0) {
         return res.status(404).send('Employee not found');
       }
   
+      // Transform 'M' and 'F' back to 'ذكر' and 'أنثى' respectively in employee details
       const employeeDetails = {
-        employee: employeeResult.rows[0],
+        employee: {
+          ...employeeResult.rows[0],
+          gender: employeeResult.rows[0].gender === 'M' ? 'ذكر' : (employeeResult.rows[0].gender === 'F' ? 'أنثى' : employeeResult.rows[0].gender)
+        },
         penalties: penaltiesResult.rows,
         vacations: vacationsResult.rows,
         promotions: promotionsResult.rows,
         assignments: assignmentsResult.rows,
-        requests:requestsResult.rows
+        requests: requestsResult.rows
       };
   
       res.json(employeeDetails);
     } catch (err) {
       console.error(err.message);
-      res.status(500).send('Server Error');
+      res.status(500).send('Server Error:' + err);
     }
   }
 
