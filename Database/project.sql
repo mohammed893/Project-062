@@ -99,7 +99,7 @@ CREATE TABLE public.employees (
     address character varying(200),
     dateoflastpromotion date,
     role character varying(50),
-    gender character varying(4),
+    gender character(1),
     religion character varying(20),
     date_of_birth date,
     phone_number character varying(15),
@@ -486,4 +486,3 @@ ALTER TABLE ONLY public.vacations
 --
 -- PostgreSQL database dump complete
 --
-
