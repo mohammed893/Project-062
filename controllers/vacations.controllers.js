@@ -2,12 +2,12 @@ const {pool} = require('../models/configrations');
 
 
 async function NewVac (req, res) {
-    const { employeeID, startDate, endDate, duration } = req.body;
+    const { employeeID, startDate, endDate, duration , typeofvacation } = req.body;
     try {
       const result = await pool.query(
-        `INSERT INTO Vacations (EmployeeID, StartDate, EndDate, Duration)
-         VALUES ($1, $2, $3, $4) RETURNING *`,
-        [employeeID, startDate, endDate, duration]
+        `INSERT INTO Vacations (EmployeeID, StartDate, EndDate, Duration ,typeofvacation )
+         VALUES ($1, $2, $3, $4 , $5) RETURNING *`,
+        [employeeID, startDate, endDate, duration , typeofvacation ]
       );
       res.json(result.rows[0]);
     } catch (err) {
