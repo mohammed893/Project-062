@@ -331,7 +331,8 @@ CREATE TABLE public.vacations (
     employeeid integer,
     startdate date,
     enddate date,
-    duration integer
+    duration integer,
+    typeofvacation character varying(20)
 );
 
 
