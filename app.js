@@ -21,6 +21,7 @@ app.use(morgan(
    format = "combined",
 ));
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use('/auth', auth);
 app.use('/employees', employees);
 app.use('/vacations', vacations);

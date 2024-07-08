@@ -2,7 +2,7 @@ const http = require('http');
 const app = require('./app');
 const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
-const {pool} = require('./models/configrations');
+const { pool } = require('./models/configrations');
 const mongoose = require('mongoose');
 const { initializeSocket } = require('./controllers/socket.controllers');
 
