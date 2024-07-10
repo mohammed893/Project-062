@@ -7,10 +7,10 @@ const createToken = (userId) => {
         expiresIn: MAXAGE,
     });
 };
-const signup = async (userId, password, role) => {
+const signup = async (userId, password) => {
     try {
-        console.log(userId, password, role);
-        const user = await User.create({ userId, password, role });
+        console.log(userId, password);
+        const user = await User.create({ userId, password });
         // const token = createToken(user.userId);
         // res.cookie('jwt', token, { httpOnly: true, maxAge: MAXAGE * 1000 });
         console.log('user created');
@@ -43,26 +43,22 @@ const whoheis = async (req, res) => {
 
             if (user) {
                 res.status(200).json({
-                    userId: user.userId,
-                    role: user.role
+                    userId: user.userId
                 });
             } else {
                 res.status(404).json({
-                    userId: null,
-                    role: null
+                    userId: null
                 });
             }
         } catch (err) {
             console.error(err.message);
             res.status(400).json({
-                userId: null,
-                role: null
+                userId: null
             });
         }
     } else {
         res.status(401).json({
-            userId: null,
-            role: null
+            userId: null
         });
     }
 };

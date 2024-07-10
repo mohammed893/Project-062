@@ -11,10 +11,6 @@ const userSchema = new mongoose.Schema({
         required: true,
         minLength: 6,
     },
-    role: {
-        type: String,
-        required: true,
-    },
 });
 
 // encrypting the password before it is saved to the database
