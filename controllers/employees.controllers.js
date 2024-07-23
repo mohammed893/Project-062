@@ -42,7 +42,7 @@ async function addNew(req, res) {
   const query = `
     INSERT INTO public.employees (${fields.join(', ')})
     VALUES (${placeholders})
-    RETURNING employeeid;
+    RETURNING *;
   `;
 
   try {
