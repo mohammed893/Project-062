@@ -13,6 +13,7 @@ const signup = async (userId, password) => {
         const user = await User.create({ userId, password });
         // const token = createToken(user.userId);
         // res.cookie('jwt', token, { httpOnly: true, maxAge: MAXAGE * 1000 });
+        await user.save();
         console.log('user created');
     } catch (e) {
         console.log(e);

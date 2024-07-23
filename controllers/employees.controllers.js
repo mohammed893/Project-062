@@ -51,7 +51,7 @@ async function addNew(req, res) {
     await post_user(result.rows[0]["employeeid"].toString());
     await signup(
       result.rows[0]["employeeid"].toString(),
-      result.rows[0]["nationalidnumber"].toString());
+      result.rows[0]["nationalidnumber"]);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error:' + err);
