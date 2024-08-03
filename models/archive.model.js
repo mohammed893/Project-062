@@ -18,6 +18,8 @@ const archiveSchema = new mongoose.Schema({
   disability: { type: [imageSchema], required: false },
   personalPhoto: { type: [imageSchema], required: false },
   bankingTransactions: { type: [imageSchema], required: false },
+  criminalRecord: { type: [imageSchema], required: false },
+  annualReports: { type: [imageSchema], required: false }
 });
 const Archive = mongoose.model('archive', archiveSchema);
 module.exports = Archive;

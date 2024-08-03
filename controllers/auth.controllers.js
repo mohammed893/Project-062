@@ -7,23 +7,27 @@ const createToken = (userId) => {
         expiresIn: MAXAGE,
     });
 };
-const signup = async (userId, password) => {
+const signup = async (req, res) => {
+    const { userId, password } = req.body;
     try {
         console.log(userId, password);
-        const user = await User.create({ userId, password });
+        await User.create({ userId, password });
         // const token = createToken(user.userId);
         // res.cookie('jwt', token, { httpOnly: true, maxAge: MAXAGE * 1000 });
-        await user.save();
-        console.log('user created');
+        res.send({
+            id: userId
+        });
     } catch (e) {
         console.log(e);
+        res.send({
+            id: null
+        })
     }
 };
 
 const login_post = async (req, res) => {
     const { userId, password } = req.body;
     try {
-        console.log(userId, password);
         const user = await User.login(userId, password);
         const token = createToken(user.userId);
         console.log(`token: ${token}`);

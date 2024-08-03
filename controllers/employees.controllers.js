@@ -49,9 +49,6 @@ async function addNew(req, res) {
     const result = await pool.query(query, values);
     res.json(result.rows[0]["employeeid"]);
     await post_user(result.rows[0]["employeeid"].toString());
-    await signup(
-      result.rows[0]["employeeid"].toString(),
-      result.rows[0]["nationalidnumber"]);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error:' + err);

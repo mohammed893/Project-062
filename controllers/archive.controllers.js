@@ -12,17 +12,17 @@ async function post_user(id) {
         }
         const document = new Archive({ name: id });
         await document.save();
-        console.log('user added to archive with ID '+ id);
+        console.log('user added to archive with ID ' + id);
     } catch (err) {
         console.log('Error Adding to Archive:', err);
     }
 }
-async function delete_user(id){
+async function delete_user(id) {
     const documentExist = await Archive.findOne({ name: id });
     if (!documentExist) {
         throw Error('this user does not exist to delete it');
     }
-    await Archive.deleteOne({name: id});
+    await Archive.deleteOne({ name: id });
 }
 
 const post_doc = async (req, res) => {
@@ -154,7 +154,26 @@ const post_doc = async (req, res) => {
                     }
                 });
                 break;
-
+            case 'annualReports':
+                await Archive.updateOne({ name: userId }, {
+                    $push: {
+                        annualReports: {
+                            filename: filename,
+                            filedata: new Binary(req.file.buffer)
+                        }
+                    }
+                });
+                break;
+            case 'criminalRecord':
+                await Archive.updateOne({ name: userId }, {
+                    $push: {
+                        criminalRecord: {
+                            filename: filename,
+                            filedata: new Binary(req.file.buffer)
+                        }
+                    }
+                });
+                break;
         }
         res.send('document added');
     } catch (err) {
