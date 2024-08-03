@@ -15,7 +15,7 @@ const postRequest = async (req, res) => {
   try {
     const documentExist = await Request.findOne({ id: req.params.id });
     if (documentExist) {
-      throw Error('this does already exist');
+      Request.deleteOne({ id: req.params.id });
     }
 
     const document = new Request({ id: req.params.id, fileData: new Binary(req.file.buffer) });

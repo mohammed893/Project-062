@@ -8,14 +8,14 @@ const { initializeSocket } = require('./controllers/socket.controllers');
 
 
 async function startServer() {
-  await pool.connect().then(
-    () => { console.log('Connected to PostgreSQL database'); }
-  ).catch((err) => {
-    console.error('Error connecting to PostgreSQL:', err.stack);
-    process.exit(1);
-  });
+  // await pool.connect().then(
+  //   () => { console.log('Connected to PostgreSQL database'); }
+  // ).catch((err) => {
+  //   console.error('Error connecting to PostgreSQL:', err.stack);
+  //   process.exit(1);
+  // });
 
-  await initializeSocket(server);
+  // await initializeSocket(server);
 
   await mongoose
     .connect('mongodb+srv://omarsaad08:5RCr7kLbTk1cwiUE@cluster0.lubh9dn.mongodb.net/hr-management-system?retryWrites=true&w=majority&appName=Cluster0')
@@ -24,7 +24,7 @@ async function startServer() {
     })
     .catch((e) => console.log(`error: ${e}`));
 
-  server.listen(PORT, () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`Listening on Port ${PORT} !`);
   });
 }
