@@ -522,7 +522,8 @@ ALTER TABLE ONLY public.training_participants
 ALTER TABLE ONLY public.training_participants
     ADD CONSTRAINT training_participants_trainingid_fkey FOREIGN KEY (trainingid) REFERENCES public.training(trainingid) ON DELETE CASCADE;
 
-
+ALTER TABLE public.employees
+    ADD COLUMN VacationBalance integer;
 --
 -- Name: vacations vacations_employeeid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --

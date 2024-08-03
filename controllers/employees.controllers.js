@@ -6,7 +6,7 @@ async function addNew(req, res) {
     'name', 'nationalidnumber', 'dateofappointment', 'insurancenumber', 'contractdate',
     'functionalgroup', 'jobtitle', 'degree', 'address', 'dateoflastpromotion', 'role', 'gender', 'religion',
     'date_of_birth', 'phone_number', 'military_service_status', 'jobcategory', 'administration',
-    'currentjob', 'qualification', 'contract', 'typeofcontract', 'report', 'employmentstatus', 'typeofemployment', 'maritalstatus'
+    'currentjob', 'qualification', 'contract', 'typeofcontract', 'report', 'employmentstatus', 'typeofemployment', 'maritalstatus','VacationBalance'
   ];
 
   // Extract provided fields and values from request body
