@@ -38,6 +38,18 @@ async function GetOne(req, res)  {
         res.status(500).json({ error: error.message });
     }
 }
+async function GetWithRecieverType(req, res)  {
+    const { Role } = req.params;
+    try {
+        const result = await pool.query('SELECT * FROM requests WHERE receiver_role = $1', [Role]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Request not found' });
+        }
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
 async function UpdateContent (req, res) {
     const { id } = req.params;
@@ -197,5 +209,6 @@ module.exports = {
     UpdateRType,
     getSameType,
     getForOne,
-    getSameStatus
+    getSameStatus,
+    GetWithRecieverType
 }

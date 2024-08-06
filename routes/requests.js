@@ -2,12 +2,13 @@
 const express = require('express');
 const requests = express.Router();
 const {AddOne,GetAll,GetOne,UpdateOne,DeleteOne,UpdateContent,UpdateStatus,
-    UpdateRRole,UpdateRType,getSameType,getForOne,getSameStatus} 
+    UpdateRRole,UpdateRType,getSameType,getForOne,getSameStatus,GetWithRecieverType} 
     = require('../controllers/requests.controllers');
 
 requests.post('/' , AddOne);//CreateOne
 requests.get('/',GetAll);//Get all 
 requests.get('/:id',GetOne);//get specific 
+requests.get('/Role/:Role',GetWithRecieverType);//get specific 
 requests.put('/:id', UpdateOne);//update full request
 requests.delete('/:id', DeleteOne);//delete specific
 requests.patch('/:id/content',UpdateContent);//update only content
