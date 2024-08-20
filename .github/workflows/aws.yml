@@ -1,0 +1,49 @@
+name: Deploy ya Khaled
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Listen to any commit
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Login to AWS ECR
+      env:
+        AWS_REGION: eu-north-1
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_ACCOUNT_ID: ${{secrets.AWS_MY_ID}}
+      run: |
+        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+    - name: Build and push Docker image
+      env:
+        IMAGE_TAG: latest
+        AWS_REGION: eu-north-1
+        AWS_ACCOUNT_ID: ${{secrets.AWS_MY_ID}}
+      run: |
+        docker build -t thedockerizedsystem:$IMAGE_TAG .
+        docker tag thedockerizedsystem:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/thedockerizedsystem:$IMAGE_TAG
+        docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_ACCOUNT_ID:$IMAGE_TAG
+
+    - name: SSH to EC2 and deploy
+      uses: appleboy/ssh-action@v0.1.2
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        envs: AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_ACCOUNT_ID
+        script: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+          docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/thedockerizedsystem:latest
+          docker stop TDS
+          docker rm TDS
+          docker run -d --name TDS -p 3000:3000 -v employeevol:/var/lib/postgresql/data  $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/thedockerizedsystem:latest
