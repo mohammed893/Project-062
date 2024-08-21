@@ -47,8 +47,8 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-          docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/thedockerizedsystem:latest
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+          docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/thedockerizedsystem:latest
           docker stop TDS || true
           docker rm TDS || true
-          docker run -d --name TDS -p 3000:3000 -v employeevol:/var/lib/postgresql/data ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/thedockerizedsystem:latest
+          docker run -d --name TDS -p 3000:3000 -v employeevol:/var/lib/postgresql/data $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/thedockerizedsystem:latest
