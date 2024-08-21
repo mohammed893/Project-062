@@ -50,9 +50,19 @@ jobs:
           echo "Logging into AWS ECR..."
           aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_MY_ID }}.dkr.ecr.eu-north-1.amazonaws.com
           
+          if [ $? -ne 0 ]; then
+            echo "AWS ECR login failed"
+            exit 1
+          fi
+
           echo "Pulling Docker image..."
           docker pull ${{ secrets.AWS_MY_ID }}.dkr.ecr.eu-north-1.amazonaws.com/thedockerizedsystem:latest
           
+          if [ $? -ne 0 ]; then
+            echo "Failed to pull Docker image"
+            exit 1
+          fi
+
           echo "Stopping and removing existing container if it exists..."
           if [ "$(docker ps -q -f name=TDS)" ]; then
             docker stop TDS
@@ -60,6 +70,11 @@ jobs:
           if [ "$(docker ps -a -q -f name=TDS)" ]; then
             docker rm TDS
           fi
-          
+
           echo "Running new Docker container..."
           docker run -d --name TDS -p 3000:3000 -v employeevol:/var/lib/postgresql/data ${{ secrets.AWS_MY_ID }}.dkr.ecr.eu-north-1.amazonaws.com/thedockerizedsystem:latest
+          
+          if [ $? -ne 0 ]; then
+            echo "Failed to run Docker container"
+            exit 1
+          fi
