@@ -47,8 +47,19 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com
-          docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/thedockerizedsystem:latest
-          docker stop TDS || true
-          docker rm TDS || true
-          docker run -d --name TDS -p 3000:3000 -v employeevol:/var/lib/postgresql/data ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/thedockerizedsystem:latest
+          echo "Logging into AWS ECR..."
+          aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_MY_ID }}.dkr.ecr.eu-north-1.amazonaws.com
+          
+          echo "Pulling Docker image..."
+          docker pull ${{ secrets.AWS_MY_ID }}.dkr.ecr.eu-north-1.amazonaws.com/thedockerizedsystem:latest
+          
+          echo "Stopping and removing existing container if it exists..."
+          if [ "$(docker ps -q -f name=TDS)" ]; then
+            docker stop TDS
+          fi
+          if [ "$(docker ps -a -q -f name=TDS)" ]; then
+            docker rm TDS
+          fi
+          
+          echo "Running new Docker container..."
+          docker run -d --name TDS -p 3000:3000 -v employeevol:/var/lib/postgresql/data ${{ secrets.AWS_MY_ID }}.dkr.ecr.eu-north-1.amazonaws.com/thedockerizedsystem:latest
