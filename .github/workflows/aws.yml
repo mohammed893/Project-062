@@ -49,7 +49,7 @@ jobs:
         script: |
           echo "Logging into AWS ECR..."
           echo -e "$key" > thekey && chmod 600 thekey
-          ssh -o StrictHostKeyChecking=no -i thekey ${username}@${host}
+          ssh -o StrictHostKeyChecking=no -i thekey ${username}@${host} '
           
           if [ $? -ne 0 ]; then
             echo "AWS ECR login failed"
