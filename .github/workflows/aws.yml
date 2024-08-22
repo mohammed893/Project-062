@@ -48,13 +48,12 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           echo "Logging into AWS ECR..."
-          echo -e "$key" > thekey && chmod 600 thekey
-          ssh -o StrictHostKeyChecking=no -i thekey ${username}@${host} 'echo "Done" '
+          aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_MY_ID }}.dkr.ecr.eu-north-1.amazonaws.com
           
-          # if [ $? -ne 0 ]; then
-          #  echo "AWS ECR login failed"
-          #  exit 1
-          # fi
+          if [ $? -ne 0 ]; then
+           echo "AWS ECR login failed"
+           exit 1
+          fi
 
           echo "Pulling Docker image..."
           docker pull ${{ secrets.AWS_MY_ID }}.dkr.ecr.eu-north-1.amazonaws.com/thedockerizedsystem:latest
