@@ -48,8 +48,8 @@ jobs:
         private-key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           echo "Enterting the AWS EC2 Hall....."
-          echo "$private-key" > key && chmod 600 key 
-          ssh -o StrictHostKeyChecking=no -i key ${{username}}@${{host}}
+          echo "$private-key" > key && chmod 600 key && "$username" > EC2_USER && "$host" > EC2_USER
+          ssh -o StrictHostKeyChecking=no -i key EC2_USER@$EC2_HOST
 
           if [ $? -ne 0 ]; then
            echo "I Lost the path of AWS EC2...."
