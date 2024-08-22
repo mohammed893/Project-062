@@ -51,10 +51,10 @@ jobs:
           echo -e "$key" > thekey && chmod 600 thekey
           ssh -o StrictHostKeyChecking=no -i thekey ${username}@${host} '
           
-          if [ $? -ne 0 ]; then
-            echo "AWS ECR login failed"
-            exit 1
-          fi
+          # if [ $? -ne 0 ]; then
+          #  echo "AWS ECR login failed"
+          #  exit 1
+          # fi
 
           echo "Pulling Docker image..."
           docker pull ${{ secrets.AWS_MY_ID }}.dkr.ecr.eu-north-1.amazonaws.com/thedockerizedsystem:latest
