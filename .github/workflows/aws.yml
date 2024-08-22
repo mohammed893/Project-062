@@ -45,10 +45,10 @@ jobs:
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
+        private-key: ${{ secrets.EC2_SSH_KEY }}
         script: |
           echo "Enterting the AWS EC2 Hall....."
-          ssh -i ${{ key }} ${{username}}@${{host}}
+          ssh -i ${{ private-key }} ${{username}}@${{host}}
 
           if [ $? -ne 0 ]; then
            echo "I Lost the path of AWS EC2...."
