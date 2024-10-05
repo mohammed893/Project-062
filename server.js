@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 const { pool } = require('./models/configrations');
 const mongoose = require('mongoose');
-const { initializeSocket } = require('./controllers/socket.controllers');
+const { initializeSocket } = require('./middleware/socket.controllers');
 
 
 async function startServer() {
